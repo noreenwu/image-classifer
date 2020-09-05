@@ -1,21 +1,38 @@
 from PIL import Image
 import numpy as np
 
+def get_new_dim(width, height, min_length=256):
+    percent_scale =  min_length / min(width, height) 
+    new_width = round(percent_scale * width)
+    new_height = round(percent_scale * height)
+    
+    return new_width, new_height
+    
+def thumb_image(image):
+    
+    im = Image.open(image)
+    orig_width, orig_height = im.size
+    new_width, new_height = get_new_dim(orig_width, orig_height)
+    
+    newsize = (new_width, new_height)
+    im.thumbnail(newsize)
+    left = round((new_width - 224)/6)
+
+    top = round((new_height - 224)/6)
+    right = left + 224
+    bottom = top + 224
+    cropped = im.crop((left, top, right, bottom)) 
+#     cropped.show()
+    return cropped
+ 
 
 def process_image(image):
     ''' Scales, crops, and normalizes a PIL image for a PyTorch model,
         returns an Numpy array
     '''
-
     # TODO: Process a PIL image for use in a PyTorch model
-    im = Image.open(image)
-    
-    width, height = im.size
-    left = (width - 224)/2
-    top = (height - 224)/2
-    right = left + 224
-    bottom = top + 224
-    cropped = im.crop((left, top, right, bottom))
+
+    cropped = thumb_image(image)
     
     np_image = np.array(cropped)
 
@@ -32,7 +49,7 @@ def process_image(image):
     return final_image
 
 # img_filename = '/Users/noreen/aipnd-project/flowers/test' + '/1/image_06743.jpg'
-# img_filename = '/Users/noreen/aipnd-project/flowers/test' + '/1/image_06752.jpg'
+img_filename = '/Users/noreen/aipnd-project/flowers/test' + '/1/image_06752.jpg'
 # img_filename = '/Users/noreen/aipnd-project/flowers/test' + '/1/image_06754.jpg'
 # img_filename = '/Users/noreen/aipnd-project/flowers/test' + '/1/image_06760.jpg'
 # img_filename = '/Users/noreen/aipnd-project/flowers/test' + '/1/image_06764.jpg'
@@ -41,7 +58,7 @@ def process_image(image):
 # img_filename = '/Users/noreen/aipnd-project/flowers/test' + '/101/image_07988.jpg'
 # img_filename = '/Users/noreen/aipnd-project/flowers/test' + '/101/image_07952.jpg'
 # img_filename = '/Users/noreen/aipnd-project/flowers/test' + '/14/image_06091.jpg'
-img_filename = '/Users/noreen/aipnd-project/flowers/train' + '/1/image_06735.jpg'
+# img_filename = '/Users/noreen/aipnd-project/flowers/train' + '/1/image_06735.jpg'
 
 print(img_filename)
 myimage = process_image(img_filename)
