@@ -1,6 +1,8 @@
 import argparse
 import os
+from torchvision import datasets, transforms, models
 
+from smodels import load_train_data, create_classifier
 
 parser = argparse.ArgumentParser(
   description='Train a specified architecture on specified data'
@@ -53,4 +55,17 @@ if args.gpu:
 else:
   print("Use CPU")
 
+
+
+###
+
+trainloader, testloader = load_train_data(train_dir, 64)
+
+model = models.vgg16(pretrained=True)           ## default; offer other choices
+
+classifier = create_classifier()
+
+model.classifier = classifier
+
+print(model)
 

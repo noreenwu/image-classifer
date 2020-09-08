@@ -1,5 +1,7 @@
 import torch
 from torchvision import datasets, transforms, models
+from torch import nn
+from collections import OrderedDict
 
 def load_train_data(root_path, batch_size):
     train_transforms = transforms.Compose(
@@ -26,3 +28,16 @@ def load_train_data(root_path, batch_size):
     testloader = torch.utils.data.DataLoader(test_data, batch_size=batch_size)
 
     return trainloader, testloader 
+
+
+def create_classifier():
+
+  classifier = nn.Sequential(OrderedDict([
+                          ('fc1', nn.Linear (25088, 1024)),
+                          ('relu', nn.ReLU ()),
+                          ('fc2', nn.Linear (1024, 102)),
+                          ('dropout', nn.Dropout (p = 0.2)),  # down from 0.3
+                          ('output', nn.LogSoftmax (dim =1))
+                      ]))
+
+  return classifier                      

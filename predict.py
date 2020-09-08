@@ -1,4 +1,5 @@
 import argparse
+from torchvision import datasets, transforms, models
 
 parser = argparse.ArgumentParser(
   description=
@@ -21,3 +22,6 @@ print("checkpoint file is {}".format(args.checkpoint))
 # optional
 print("top_k is {}".format(args.top_k))
 print("category names file is {}".format(args.category_names))
+
+
+###
