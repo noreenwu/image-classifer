@@ -3,6 +3,7 @@ from torchvision import datasets, transforms, models
 from torch import nn
 from collections import OrderedDict
 
+
 def load_train_data(root_path, batch_size):
     train_transforms = transforms.Compose(
             [transforms.RandomResizedCrop(224),
@@ -20,7 +21,9 @@ def load_train_data(root_path, batch_size):
     
     train_dir = root_path + "/train"
     test_dir = root_path + "/test"
-
+    print("train_dir is ", train_dir)
+    print("test_dir is ", test_dir)    
+    
     train_data = datasets.ImageFolder(train_dir, transform=train_transforms)
     test_data = datasets.ImageFolder(test_dir, transform=test_transforms)
 
@@ -30,14 +33,65 @@ def load_train_data(root_path, batch_size):
     return trainloader, testloader 
 
 
-def create_classifier():
+# def create_classifier():
 
-  classifier = nn.Sequential(OrderedDict([
-                          ('fc1', nn.Linear (25088, 1024)),
-                          ('relu', nn.ReLU ()),
-                          ('fc2', nn.Linear (1024, 102)),
-                          ('dropout', nn.Dropout (p = 0.2)),  # down from 0.3
-                          ('output', nn.LogSoftmax (dim =1))
-                      ]))
+#   classifier = nn.Sequential(OrderedDict([
+#                           ('fc1', nn.Linear (25088, 1024)),
+#                           ('relu', nn.ReLU ()),
+#                           ('fc2', nn.Linear (1024, 102)),
+#                           ('dropout', nn.Dropout (p = 0.2)),  # down from 0.3
+#                           ('output', nn.LogSoftmax (dim =1))
+#                       ]))
 
-  return classifier                      
+#   return classifier 
+
+
+# def train(model, device, trainloader, testloader, optimizer, criterion, epochs=1):
+    
+# #     epochs = 1
+#     steps = 0
+#     running_loss = 0
+#     print_every = 5
+#     model.to(device)
+
+#     for epoch in range(epochs):
+#         for images, labels in trainloader:
+#             steps += 1
+
+#             images, labels = images.to(device), labels.to(device)
+
+#             optimizer.zero_grad()
+
+#             logps = model(images)
+#             loss = criterion(logps, labels)
+#             loss.backward()
+#             optimizer.step()
+
+#             running_loss += loss.item()   
+
+#             if steps % print_every == 0:
+#                 model.eval()
+#                 test_loss = 0
+#                 accuracy = 0 
+
+#                 for images, labels in testloader:
+#                     images, labels = images.to(device), labels.to(device)
+
+#                     logps = model(images)
+#                     loss = criterion(logps, labels)
+#                     test_loss += loss.item()         
+
+#                     # calculate accuracy
+#                     ps = torch.exp(logps)
+#                     top_ps, top_class = ps.topk(1, dim=1)
+#                     equality = top_class == labels.view(*top_class.shape)
+#                     accuracy += torch.mean(equality.type(torch.FloatTensor)).item()                 
+
+#                 print("Epoch: {}/{}.. ".format(epoch+1, epochs),
+#                       "Training Loss: {:.3f}.. ".format(running_loss/print_every),
+#                       "Test Loss: {:.3f}.. ".format(test_loss/len(testloader)),
+#                       "Test Accuracy: {:.3f}".format(accuracy/len(testloader)))
+
+#                 running_loss = 0
+#                 model.train()
+                                 
