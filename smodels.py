@@ -31,7 +31,7 @@ def load_train_data(root_path, batch_size):
     trainloader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
     testloader = torch.utils.data.DataLoader(test_data, batch_size=batch_size)
 
-    return trainloader, testloader 
+    return trainloader, testloader, train_data.class_to_idx
 
 
 # def create_classifier():
@@ -47,52 +47,64 @@ def load_train_data(root_path, batch_size):
 #   return classifier 
 
 
-# def train(model, device, trainloader, testloader, optimizer, criterion, epochs=1):
+def create_classifier():
     
-# #     epochs = 1
-#     steps = 0
-#     running_loss = 0
-#     print_every = 5
-#     model.to(device)
+    classifier = nn.Sequential(OrderedDict([
+        ('fc1', nn.Linear (25088, 1024)),
+        ('relu', nn.ReLU ()),
+        ('dropout', nn.Dropout (p = 0.2)),  # down from 0.3    
+        ('fc2', nn.Linear (1024, 102)),     # swap dropout and fc2 
+        ('output', nn.LogSoftmax (dim =1))
+    ]))
+    
+    return classifier
+    
 
-#     for epoch in range(epochs):
-#         for images, labels in trainloader:
-#             steps += 1
+def train(model, device, trainloader, testloader, optimizer, criterion, epochs=1):
+    
+    steps = 0
+    running_loss = 0
+    print_every = 5
+    model.to(device)
 
-#             images, labels = images.to(device), labels.to(device)
+    for epoch in range(epochs):
+        for images, labels in trainloader:
+            steps += 1
 
-#             optimizer.zero_grad()
+            images, labels = images.to(device), labels.to(device)
 
-#             logps = model(images)
-#             loss = criterion(logps, labels)
-#             loss.backward()
-#             optimizer.step()
+            optimizer.zero_grad()
 
-#             running_loss += loss.item()   
+            logps = model(images)
+            loss = criterion(logps, labels)
+            loss.backward()
+            optimizer.step()
 
-#             if steps % print_every == 0:
-#                 model.eval()
-#                 test_loss = 0
-#                 accuracy = 0 
+            running_loss += loss.item()   
 
-#                 for images, labels in testloader:
-#                     images, labels = images.to(device), labels.to(device)
+            if steps % print_every == 0:
+                model.eval()
+                test_loss = 0
+                accuracy = 0 
 
-#                     logps = model(images)
-#                     loss = criterion(logps, labels)
-#                     test_loss += loss.item()         
+                for images, labels in testloader:
+                    images, labels = images.to(device), labels.to(device)
 
-#                     # calculate accuracy
-#                     ps = torch.exp(logps)
-#                     top_ps, top_class = ps.topk(1, dim=1)
-#                     equality = top_class == labels.view(*top_class.shape)
-#                     accuracy += torch.mean(equality.type(torch.FloatTensor)).item()                 
+                    logps = model(images)
+                    loss = criterion(logps, labels)
+                    test_loss += loss.item()         
 
-#                 print("Epoch: {}/{}.. ".format(epoch+1, epochs),
-#                       "Training Loss: {:.3f}.. ".format(running_loss/print_every),
-#                       "Test Loss: {:.3f}.. ".format(test_loss/len(testloader)),
-#                       "Test Accuracy: {:.3f}".format(accuracy/len(testloader)))
+                    # calculate accuracy
+                    ps = torch.exp(logps)
+                    top_ps, top_class = ps.topk(1, dim=1)
+                    equality = top_class == labels.view(*top_class.shape)
+                    accuracy += torch.mean(equality.type(torch.FloatTensor)).item()                 
 
-#                 running_loss = 0
-#                 model.train()
+                print("Epoch: {}/{}.. ".format(epoch+1, epochs),
+                      "Training Loss: {:.3f}.. ".format(running_loss/print_every),
+                      "Test Loss: {:.3f}.. ".format(test_loss/len(testloader)),
+                      "Test Accuracy: {:.3f}".format(accuracy/len(testloader)))
+
+                running_loss = 0
+                model.train()
                                  
