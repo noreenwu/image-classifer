@@ -34,18 +34,6 @@ def load_train_data(root_path, batch_size):
     return trainloader, testloader, train_data.class_to_idx
 
 
-# def create_classifier():
-
-#   classifier = nn.Sequential(OrderedDict([
-#                           ('fc1', nn.Linear (25088, 1024)),
-#                           ('relu', nn.ReLU ()),
-#                           ('fc2', nn.Linear (1024, 102)),
-#                           ('dropout', nn.Dropout (p = 0.2)),  # down from 0.3
-#                           ('output', nn.LogSoftmax (dim =1))
-#                       ]))
-
-#   return classifier 
-
 
 def create_classifier():
     
@@ -108,3 +96,15 @@ def train(model, device, trainloader, testloader, optimizer, criterion, epochs=1
                 running_loss = 0
                 model.train()
                                  
+
+def save_checkpoint(epochs, model, optimizer):
+    
+    checkpoint = {
+        'epochs': epochs,
+        'state_dict': model.state_dict(),
+        'map': model.class_to_idx,
+        'optimizer': optimizer.state_dict(),
+        'classifier': model.classifier
+    }
+
+    torch.save(checkpoint, 'checkpoint.pth')    
