@@ -1,5 +1,25 @@
 import argparse
 import os
+import torch
+from simage import process_image
+from smodels import load_checkpoint
+
+def predict(image_path, model, k=3):
+    ''' Predict the class (or classes) of an image using a trained deep learning model.
+    '''    
+    # TODO: Implement the code to predict the class from an image file
+    image = process_image(image_path)
+    image.to("cpu")  
+    model.to("cpu")
+    image.unsqueeze_(0)
+    image = image.float()
+  
+    logps = model(image)
+    ps = torch.exp(logps)
+    top_ps, top_class = ps.topk(k, dim=1)
+    print(top_ps)
+    print(top_class)
+    
 
 def get_options():
     TOP_K_DEFAULT = 3
@@ -39,6 +59,9 @@ def main(raw_args=None):
     
       print("main got:\n {}, {}, {}, {}".format(image_path, checkpoint_file, k, cat_names))
     
-          
+      model = load_checkpoint(checkpoint_file)
+        
+      predict(image_path, model, k)
+        
 if __name__ == '__main__':
     main()

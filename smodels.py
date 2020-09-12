@@ -108,3 +108,19 @@ def save_checkpoint(epochs, model, optimizer):
     }
 
     torch.save(checkpoint, 'checkpoint.pth')    
+    
+    
+def load_checkpoint(filepath):
+    checkpoint = torch.load(filepath)    
+    model = models.vgg16(pretrained=True)
+    # freeze parameters
+    for param in model.parameters():
+        param.requires_grad = False
+    model.classifier = checkpoint['classifier']
+    model.class_to_idx = checkpoint['map']
+    model.state_dict = checkpoint['state_dict']
+    model.optimizer = checkpoint['optimizer']
+    model.eval()
+    
+    return model
+  
