@@ -7,7 +7,7 @@ from torch import nn, optim
 from collections import OrderedDict
 
 from smodels import load_train_data, create_classifier, train, save_checkpoint
-
+from utils import check_device
 
 def define_args():
     LEARN_RATE_DEFAULT = 0.001
@@ -58,16 +58,7 @@ def get_options():
     print("Number of hidden units: {}".format(args.hidden_units))
     print("Epochs: {}".format(args.epochs))    
     
-    if args.gpu:
-        specified_device = "cuda"
-    else:
-        specified_device = "cpu"
-
-
-    if specified_device == "cuda":
-        if not torch.cuda.is_available():
-            print("GPU specified but not available. Sorry")
-            exit(1)
+    specified_device = check_device(args.gpu)
 
     print("Device: {}".format(specified_device))
     

@@ -110,7 +110,11 @@ def save_checkpoint(epochs, model, optimizer):
     torch.save(checkpoint, 'checkpoint.pth')    
     
     
-def load_checkpoint(filepath):
+def load_checkpoint(filepath, device):
+    if not torch.cuda.is_available():
+        print("GPU is not available. Please enable and re-run script.")
+        exit(1)
+                  
     checkpoint = torch.load(filepath)    
     model = models.vgg16(pretrained=True)
     # freeze parameters
