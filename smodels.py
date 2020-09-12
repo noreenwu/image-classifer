@@ -2,7 +2,7 @@ import torch
 from torchvision import datasets, transforms, models
 from torch import nn
 from collections import OrderedDict
-
+import json
 
 def load_train_data(root_path, batch_size):
     train_transforms = transforms.Compose(
@@ -128,3 +128,20 @@ def load_checkpoint(filepath, device):
     
     return model
   
+    
+def get_flowername_mapping(cat_names_file):
+    with open('cat_to_name.json', 'r') as f:
+        cat_to_name = json.load(f)
+        
+    return cat_to_name    
+    
+    
+def get_flower_name(idx_to_class, cat_to_name, predicted_cat):
+    return cat_to_name[idx_to_class[predicted_cat]]
+
+
+def get_idx_to_class(class_to_idx):
+    
+    idx_to_class = { value : key for (key, value) in class_to_idx.items() }
+    
+    return idx_to_class

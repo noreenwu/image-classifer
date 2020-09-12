@@ -1,29 +1,33 @@
 import argparse
 import os
 import torch
+
 from simage import process_image
-from smodels import load_checkpoint
+from smodels import load_checkpoint, get_idx_to_class, get_flower_name, get_flowername_mapping
 from utils import check_device
+
+
 
 def predict(image_path, model, device, k=3):
     ''' Predict the class (or classes) of an image using a trained deep learning model.
     '''    
     # TODO: Implement the code to predict the class from an image file
     image = process_image(image_path)
-    image.to(device)  
-    model.to(device)
+    image.to("cpu")         # doesn't work on cuda
+    model.to("cpu")
     image.unsqueeze_(0)
     image = image.float()
   
     logps = model(image)
     ps = torch.exp(logps)
     top_ps, top_class = ps.topk(k, dim=1)
-    print(top_ps)
-    print(top_class)
+    
+    return top_ps, top_class
+
     
 
 def get_options():
-    TOP_K_DEFAULT = 3
+    TOP_K_DEFAULT = 1
     
     parser = argparse.ArgumentParser(
       description=
@@ -60,13 +64,26 @@ def get_options():
 
 def main(raw_args=None):
     
-      image_path, checkpoint_file, k, cat_names, specified_device = get_options()
+      image_path, checkpoint_file, k, cat_names_file, specified_device = get_options()
     
 #       print("main got:\n {}, {}, {}, {}".format(image_path, checkpoint_file, k, cat_names))
     
       model = load_checkpoint(checkpoint_file, specified_device)
         
-      predict(image_path, model, specified_device, k)
+      top_ps, top_class = predict(image_path, model, specified_device, k)
+    
+      confidence = top_ps.tolist()[0][0] * 100
+      
+      predicted_cat = top_class.tolist()[0][0]        
+        
+      idx_to_class = get_idx_to_class(model.class_to_idx)
+        
+      cat_map = get_flowername_mapping(cat_names_file)
+    
+      flower_name = get_flower_name(idx_to_class, cat_map, predicted_cat)
+    
+      print("I can say with {} confidence that this flower is a {}.".format(confidence, flower_name))  
+
         
 if __name__ == '__main__':
     main()
