@@ -13489,10 +13489,10 @@ GPU Workspaces about Keeping Your Session Active. You'll want to include code fr
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get ready to train</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get ready to train. Also run this when predicting</span>
 
 <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
@@ -13512,7 +13512,7 @@ GPU Workspaces about Keeping Your Session Active. You'll want to include code fr
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>cuda
+<pre>cpu
 </pre>
 </div>
 </div>
@@ -13777,14 +13777,14 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load previously saved checkpoint to make predictions without retraining</span>
 
 <span class="k">def</span> <span class="nf">load_checkpoint</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
     <span class="c1"># since predictions can be run from cpu, load the checkpoint there</span>
-    <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>    
+    <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>    
     <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">vgg16</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="c1"># freeze parameters</span>
     <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
@@ -13805,11 +13805,11 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Model must be loaded globablly for the sanity check</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">load_checkpoint</span><span class="p">(</span><span class="s1">&#39;checkpoint_cpu.pth&#39;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">load_checkpoint</span><span class="p">(</span><span class="s1">&#39;checkpoint.pth&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 </pre></div>
 
@@ -13828,7 +13828,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>Downloading: &#34;https://download.pytorch.org/models/vgg16-397923af.pth&#34; to /root/.torch/models/vgg16-397923af.pth
-100%|██████████| 553433881/553433881 [00:05&lt;00:00, 97488730.39it/s] 
+100%|██████████| 553433881/553433881 [00:06&lt;00:00, 91384960.93it/s] 
 </pre>
 </div>
 </div>
@@ -13911,7 +13911,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Before cropping the image, it first needs to be resized so the shorter edge is 256 px</span>
@@ -13949,7 +13949,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -13983,10 +13983,10 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">process_image</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">process_image</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Scales, crops, and normalizes a PIL image for a PyTorch model,</span>
 <span class="sd">        returns an Numpy array</span>
 <span class="sd">    &#39;&#39;&#39;</span>
@@ -14005,10 +14005,13 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
                 
     <span class="n">np_image</span> <span class="o">=</span> <span class="n">np_image</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>        
     
-    <span class="n">final_image</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np_image</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>        
+        <span class="n">final_image</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np_image</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">device</span> <span class="o">==</span> <span class="s1">&#39;cuda&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;returning CUDA type&quot;</span><span class="p">)</span>
+        <span class="n">final_image</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np_image</span><span class="p">)</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">)</span>
+    
     <span class="k">return</span> <span class="n">final_image</span>
-
-  
 </pre></div>
 
     </div>
@@ -14042,10 +14045,10 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">device</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">device</span><span class="o">.</span><span class="n">type</span>
 </pre></div>
 
     </div>
@@ -14058,13 +14061,13 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[9]:</div>
+    <div class="prompt output_prompt">Out[8]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>device(type=&#39;cuda&#39;)</pre>
+<pre>&#39;cpu&#39;</pre>
 </div>
 
 </div>
@@ -14075,7 +14078,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">topk</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
@@ -14084,7 +14087,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
     <span class="c1"># When sent a path to an image, return the top 5 (default) most likely flowers and probabilities</span>
  
     
-    <span class="n">image</span> <span class="o">=</span> <span class="n">process_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">process_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">device</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
     
     <span class="n">image</span><span class="o">.</span><span class="n">unsqueeze_</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
@@ -14108,7 +14111,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This function allows you to specify the checkpoint path. The model will be</span>
@@ -14126,7 +14129,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This is repeated from above for convenience when going straight to prediction from loaded checkpoint</span>
@@ -14144,7 +14147,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># image to test</span>
@@ -14159,10 +14162,10 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">probabilities</span><span class="p">,</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">make_prediction</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="s1">&#39;checkpoint_cpu.pth&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">probabilities</span><span class="p">,</span> <span class="n">predictions</span> <span class="o">=</span> <span class="n">make_prediction</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="s1">&#39;checkpoint.pth&#39;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
@@ -14204,7 +14207,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_flower_name</span><span class="p">(</span><span class="n">idx_to_class</span><span class="p">,</span> <span class="n">cat_to_name</span><span class="p">,</span> <span class="n">predicted_cat</span><span class="p">):</span>
@@ -14218,7 +14221,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">class_to_idx</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">class_to_idx</span>
@@ -14232,7 +14235,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># translate the list of numeric predictions into flower names, for the title and graph</span>
@@ -14269,7 +14272,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Display the top predictions in a bar graph</span>
@@ -14294,7 +14297,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># center the prediction results</span>
@@ -14321,7 +14324,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[19]:</div>
+    <div class="prompt output_prompt">Out[18]:</div>
 
 
 
@@ -14346,13 +14349,13 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Display the test image along with a plot of the top 5 predictions</span>
 
 <span class="k">def</span> <span class="nf">display_prediction</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">flower_name_predictions</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
-    <span class="n">test_image</span> <span class="o">=</span> <span class="n">process_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">)</span>
+    <span class="n">test_image</span> <span class="o">=</span> <span class="n">process_image</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">device</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
     <span class="n">imshow</span><span class="p">(</span><span class="n">test_image</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">flower_name_predictions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>    
 
     <span class="n">show_prediction_plot</span><span class="p">(</span><span class="n">flower_name_predictions</span> <span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>     
@@ -14365,7 +14368,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">display_prediction</span><span class="p">(</span><span class="n">image_path</span><span class="p">,</span> <span class="n">flower_name_predictions</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
