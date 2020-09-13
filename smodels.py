@@ -35,7 +35,7 @@ def load_train_data(root_path, batch_size):
 
 
 
-def create_classifier():
+def create_classifier_vgg():
     
     classifier = nn.Sequential(OrderedDict([
         ('fc1', nn.Linear (25088, 1024)),
@@ -48,6 +48,18 @@ def create_classifier():
     return classifier
     
 
+def create_classifier_densenet():
+    classifier = nn.Sequential(OrderedDict([
+        ('fc1', nn.Linear(1024, 500)),
+        ('relu', nn.ReLU()),
+        ('fc2', nn.Linear(500, 102)),
+        ('output', nn.LogSoftmax(dim=1))
+        
+    ]))
+    
+    return classifier
+    
+    
 def train(model, device, trainloader, testloader, optimizer, criterion, epochs=1):
     
     steps = 0
@@ -97,7 +109,7 @@ def train(model, device, trainloader, testloader, optimizer, criterion, epochs=1
                 model.train()
                                  
 
-def save_checkpoint(epochs, model, optimizer):
+def save_checkpoint(epochs, model, optimizer, save_dir, arch):
     
     checkpoint = {
         'epochs': epochs,
@@ -107,7 +119,7 @@ def save_checkpoint(epochs, model, optimizer):
         'classifier': model.classifier
     }
 
-    torch.save(checkpoint, 'checkpoint.pth')    
+    torch.save(checkpoint, save_dir + '/' + arch + '-checkpoint.pth')    
     
     
 def load_checkpoint(filepath, device):

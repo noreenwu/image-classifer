@@ -6,7 +6,8 @@ from torchvision import datasets, transforms, models
 from torch import nn, optim
 from collections import OrderedDict
 
-from smodels import load_train_data, create_classifier, train, save_checkpoint
+# from smodels import load_train_data, create_classifier_vgg, create_classifier_densenet, train, save_checkpoint
+from smodels import *
 from utils import check_device
 
 def define_args():
@@ -19,7 +20,7 @@ def define_args():
     )
     parser.add_argument("train_data_dir", help="training data directory")
 
-    parser.add_argument("-a", "--arch", default="vgg16", help="pretrained architecture")
+    parser.add_argument("-a", "--arch", default="vgg16", help="pretrained architecture: vgg or densenet")
     parser.add_argument("-s", "--save_dir", default="checkpoints", help="checkpoint save directory")
     parser.add_argument("-l", "--learning_rate", type=float, default=LEARN_RATE_DEFAULT, help="learning rate")
     parser.add_argument("-hu", "--hidden_units", type=int, default=HIDDEN_UNITS_DEFAULT, help="hidden_units")
@@ -47,13 +48,17 @@ def get_options():
       print("Could not find checkpoints directory: {}".format(checkpoints_dir))
       exit(1)
     print("Save checkpoint to directory: {}".format(checkpoints_dir))
+    print("Will save checkpoint to {}".format(checkpoints_dir + '/' + args.arch + '-checkpoint.pth'))
 
+    
     # TODO: alternative architectures may be specified
-    print("Train with architecure: {}".format(args.arch))
-    
+    if args.arch != "vgg16" and args.arch != "densenet121":
+        print ("Specified architecture, {}, is not supported. Please specify either vgg16 or densenet121".format(args.arch))
+        exit(1)
+    print("Train with architecure: {}".format(args.arch))        
+            
     # the learning rate may be specified; the default is 0.001
-    print("Learning rate: {}".format(args.learning_rate))
-    
+    print("Learning rate: {}".format(args.learning_rate))    
     
     print("Number of hidden units: {}".format(args.hidden_units))
     print("Epochs: {}".format(args.epochs))    
@@ -62,12 +67,16 @@ def get_options():
 
     print("Device: {}".format(specified_device))
     
-    return train_dir, checkpoints_dir, args.arch, args.learning_rate, args.hidden_units, args.epochs, specified_device
+    
+    return (
+        train_dir, checkpoints_dir, args.arch, args.learning_rate, 
+        args.hidden_units, args.epochs, specified_device )        
+
 
 
 def main(raw_args=None):
     BATCH_SIZE = 32
-    train_dir, checkpoints_dir, arch, learning_rate, hidden_units, epochs, specified_device = get_options()
+    train_dir, save_dir, arch, learning_rate, hidden_units, epochs, specified_device = get_options()
         
     # set device to cuda, if specified
     if specified_device == "cuda":
@@ -78,10 +87,16 @@ def main(raw_args=None):
     
     print(class_to_idx)
 
-    model = models.vgg16(pretrained=True)           ## TODO: offer other choices
-    # model = models.densenet121(pretrained=True)
+    if arch == "vgg16":
+        model = models.vgg16(pretrained=True)
+        classifier = create_classifier_vgg() 
+    elif arch == "densenet121":
+        model = models.densenet121(pretrained=True)
+        classifier = create_classifier_densenet()
+    else:
+        print("Fatal: other models not supported")
+        exit(1)
 
-    classifier = create_classifier()
 
     model.classifier = classifier
 
@@ -98,7 +113,8 @@ def main(raw_args=None):
     
     model.class_to_idx = class_to_idx    # saved above    
     
-    save_checkpoint(epochs, model, optimizer)
+    model.to("cpu")           # better to save checkpoint for cpu
+    save_checkpoint(epochs, model, optimizer, save_dir, arch)
 
     
 if __name__ == '__main__':
