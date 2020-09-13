@@ -2,32 +2,14 @@ import argparse
 import os
 import torch
 
-from simage import process_image
-from smodels import (load_checkpoint, get_idx_to_class, 
-                     get_flower_name, get_flowername_mapping, preds_to_flower_names)
+
+from smodels import (load_checkpoint, get_idx_to_class, get_flower_name,
+                     get_flowername_mapping, preds_to_flower_names, predict)
 from utils import check_device
 
 
 
-def predict(image_path, model, device, k=3):
-    ''' Predict the class (or classes) of an image using a trained deep learning model.
-    '''    
-    if device == "cuda":
-        image.to(device)
-        model.to(device)
-        
-    image = process_image(image_path)
 
-    image.unsqueeze_(0)
-    image = image.float()
-         
-    logps = model(image)
-    ps = torch.exp(logps)
-    top_ps, top_class = ps.topk(k, dim=1)
-    
-    return top_ps, top_class
-
-    
 
 def get_options():
     TOP_K_DEFAULT = 1

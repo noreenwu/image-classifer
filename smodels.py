@@ -3,6 +3,7 @@ from torchvision import datasets, transforms, models
 from torch import nn
 from collections import OrderedDict
 import json
+from simage import process_image
 
 def load_train_data(root_path, batch_size):
     train_transforms = transforms.Compose(
@@ -144,14 +145,27 @@ def load_checkpoint(filepath, device):
     model.class_to_idx = checkpoint['map']
     model.state_dict = checkpoint['state_dict']
     model.optimizer = checkpoint['optimizer']
-    model.eval()
-        
-    if device == "cuda":
-        model.to("cuda")
+    model.eval()        
         
     return model
   
     
+def predict(image_path, model, device, k=3):
+    ''' Predict the class (or classes) of an image using a trained deep learning model.
+    '''    
+        
+    image = process_image(image_path)
+    
+    image.unsqueeze_(0)
+    image = image.float()
+         
+    logps = model(image)
+    ps = torch.exp(logps)
+    top_ps, top_class = ps.topk(k, dim=1)
+    
+    return top_ps, top_class
+
+        
 def get_flowername_mapping(cat_names_file='cat_to_name.json'):
     print("Using file \"{}\" to map category names to index".format(cat_names_file))
     with open(cat_names_file, 'r') as f:        
