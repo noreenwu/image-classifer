@@ -3,7 +3,8 @@ import os
 import torch
 
 from simage import process_image
-from smodels import load_checkpoint, get_idx_to_class, get_flower_name, get_flowername_mapping
+from smodels import (load_checkpoint, get_idx_to_class, 
+                     get_flower_name, get_flowername_mapping, preds_to_flower_names)
 from utils import check_device
 
 
@@ -76,13 +77,19 @@ def main(raw_args=None):
       
       predicted_cat = top_class.tolist()[0][0]        
         
+      predicted_set = top_class.tolist()[0]
+      probability_set = top_ps.tolist()[0]
+      print(probability_set)
+      print(predicted_set)
+        
       idx_to_class = get_idx_to_class(model.class_to_idx)
         
       cat_map = get_flowername_mapping(cat_names_file)
     
       flower_name = get_flower_name(idx_to_class, cat_map, predicted_cat)
     
-      print("I can say with {} confidence that this flower is a {}.".format(confidence, flower_name))  
+      print(preds_to_flower_names(predicted_set, idx_to_class, cat_map))    
+      print("I can say with {} confidence that this flower\'s name is: \"{}\"".format(round(confidence,2), flower_name))  
 
         
 if __name__ == '__main__':

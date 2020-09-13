@@ -123,12 +123,20 @@ def save_checkpoint(epochs, model, optimizer, save_dir, arch):
     
     
 def load_checkpoint(filepath, device):
-    if not torch.cuda.is_available():
-        print("GPU is not available. Please enable and re-run script.")
+    if device == 'cuda':
+        if not torch.cuda.is_available():
+            print("GPU is not available. Please enable and re-run script.")
+            exit(1)
+    
+    checkpoint = torch.load(filepath, map_location='cpu')   
+    if "densenet" in filepath:
+        model = models.densenet121(pretrained=True)
+    elif "vgg" in filepath:
+        model = models.vgg16(pretrained=True)
+    else:
+        print("Not sure of architecture used in checkpoint: exiting")
         exit(1)
-                  
-    checkpoint = torch.load(filepath)    
-    model = models.vgg16(pretrained=True)
+    
     # freeze parameters
     for param in model.parameters():
         param.requires_grad = False
@@ -137,7 +145,7 @@ def load_checkpoint(filepath, device):
     model.state_dict = checkpoint['state_dict']
     model.optimizer = checkpoint['optimizer']
     model.eval()
-    
+        
     return model
   
     
@@ -152,6 +160,13 @@ def get_flower_name(idx_to_class, cat_to_name, predicted_cat):
     return cat_to_name[idx_to_class[predicted_cat]]
 
 
+def preds_to_flower_names(preds, idx_to_class, cat_to_name):
+    flowers = []
+    for p in preds:
+        flowers.append(get_flower_name(idx_to_class, cat_to_name, p))
+    
+    return flowers
+    
 def get_idx_to_class(class_to_idx):
     
     idx_to_class = { value : key for (key, value) in class_to_idx.items() }
