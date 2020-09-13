@@ -154,8 +154,11 @@ def load_checkpoint(filepath, device):
 def predict(image_path, model, device, k=3):
     ''' Predict the class (or classes) of an image using a trained deep learning model.
     '''    
-        
-    image = process_image(image_path)
+    print("predict: device is {}".format(device))
+    image = process_image(image_path, device)
+    
+    image.to(device)
+    model.to(device)
     
     image.unsqueeze_(0)
     image = image.float()

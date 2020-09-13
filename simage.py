@@ -27,11 +27,11 @@ def thumb_image(image):
     return cropped
  
     
-def process_image(image):
+def process_image(image, device):
     ''' Scales, crops, and normalizes a PIL image for a PyTorch    model,
      returns an Numpy array
     '''
-    # TODO: Process a PIL image for use in a PyTorch model
+    # Process a PIL image for use in a PyTorch model
 
     cropped = thumb_image(image)
     
@@ -46,5 +46,11 @@ def process_image(image):
                 
     np_image = np_image.transpose((2, 0, 1))        
     
-    final_image = torch.from_numpy(np_image)
+#     final_image = torch.from_numpy(np_image)    
+    if device == 'cpu':        
+        final_image = torch.from_numpy(np_image)
+    elif device == 'cuda':
+        final_image = torch.from_numpy(np_image).type(torch.cuda.FloatTensor)
+        
+
     return final_image    

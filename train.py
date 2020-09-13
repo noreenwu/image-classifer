@@ -6,8 +6,9 @@ from torchvision import datasets, transforms, models
 from torch import nn, optim
 from collections import OrderedDict
 
-# from smodels import load_train_data, create_classifier_vgg, create_classifier_densenet, train, save_checkpoint
-from smodels import *
+from smodels import (load_train_data, create_classifier_vgg, create_classifier_densenet, 
+                     train, save_checkpoint)
+
 from utils import check_device
 
 def define_args():
@@ -85,7 +86,6 @@ def main(raw_args=None):
     # load training and test data; get the class_to_idx mapping
     trainloader, testloader, class_to_idx = load_train_data(train_dir, BATCH_SIZE) 
     
-    print(class_to_idx)
 
     if arch == "vgg16":
         model = models.vgg16(pretrained=True)
