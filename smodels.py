@@ -53,6 +53,7 @@ def create_classifier_densenet():
     classifier = nn.Sequential(OrderedDict([
         ('fc1', nn.Linear(1024, 500)),
         ('relu', nn.ReLU()),
+        ('dropout', nn.Dropout (p = 0.2)),        
         ('fc2', nn.Linear(500, 102)),
         ('output', nn.LogSoftmax(dim=1))
         
