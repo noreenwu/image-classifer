@@ -40,8 +40,8 @@ def create_classifier_vgg():
     classifier = nn.Sequential(OrderedDict([
         ('fc1', nn.Linear (25088, 1024)),
         ('relu', nn.ReLU ()),
-        ('dropout', nn.Dropout (p = 0.2)),  # down from 0.3    
-        ('fc2', nn.Linear (1024, 102)),     # swap dropout and fc2 
+        ('dropout', nn.Dropout (p = 0.2)),  
+        ('fc2', nn.Linear (1024, 102)),     
         ('output', nn.LogSoftmax (dim =1))
     ]))
     
@@ -146,11 +146,15 @@ def load_checkpoint(filepath, device):
     model.optimizer = checkpoint['optimizer']
     model.eval()
         
+    if device == "cuda":
+        model.to("cuda")
+        
     return model
   
     
-def get_flowername_mapping(cat_names_file):
-    with open('cat_to_name.json', 'r') as f:
+def get_flowername_mapping(cat_names_file='cat_to_name.json'):
+    print("Using file \"{}\" to map category names to index".format(cat_names_file))
+    with open(cat_names_file, 'r') as f:        
         cat_to_name = json.load(f)
         
     return cat_to_name    

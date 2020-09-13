@@ -12,13 +12,15 @@ from utils import check_device
 def predict(image_path, model, device, k=3):
     ''' Predict the class (or classes) of an image using a trained deep learning model.
     '''    
-    # TODO: Implement the code to predict the class from an image file
+    if device == "cuda":
+        image.to(device)
+        model.to(device)
+        
     image = process_image(image_path)
-    image.to("cpu")         # doesn't work on cuda
-    model.to("cpu")
+
     image.unsqueeze_(0)
     image = image.float()
-  
+         
     logps = model(image)
     ps = torch.exp(logps)
     top_ps, top_class = ps.topk(k, dim=1)
