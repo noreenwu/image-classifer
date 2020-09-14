@@ -83,8 +83,8 @@ def main(raw_args=None):
     if specified_device == "cuda":
         device = torch.device("cuda")
         
-    # load training and test data; get the class_to_idx mapping
-    trainloader, testloader, class_to_idx = load_train_data(train_dir, BATCH_SIZE) 
+    # load training and validation data; get the class_to_idx mapping
+    trainloader, validloader, class_to_idx = load_train_data(train_dir, BATCH_SIZE) 
     
 
     if arch == "vgg16":
@@ -109,7 +109,7 @@ def main(raw_args=None):
 
     optimizer= optim.Adam(model.classifier.parameters(), lr=learning_rate)    ## learning rate customizable
     
-    train(model, device, trainloader, testloader, optimizer, criterion, epochs)
+    train(model, device, trainloader, validloader, optimizer, criterion, epochs)
     
     model.class_to_idx = class_to_idx    # saved above    
     

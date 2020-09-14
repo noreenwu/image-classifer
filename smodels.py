@@ -22,17 +22,17 @@ def load_train_data(root_path, batch_size):
              ])
     
     train_dir = root_path + "/train"
-    test_dir = root_path + "/test"
+    valid_dir = root_path + "/valid"
     print("train_dir is ", train_dir)
-    print("test_dir is ", test_dir)    
+    print("valid_dir is ", valid_dir)    
     
     train_data = datasets.ImageFolder(train_dir, transform=train_transforms)
-    test_data = datasets.ImageFolder(test_dir, transform=test_transforms)
+    valid_data = datasets.ImageFolder(valid_dir, transform=test_transforms)
 
     trainloader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, shuffle=True)
-    testloader = torch.utils.data.DataLoader(test_data, batch_size=batch_size)
+    validloader = torch.utils.data.DataLoader(valid_data, batch_size=batch_size)
 
-    return trainloader, testloader, train_data.class_to_idx
+    return trainloader, validloader, train_data.class_to_idx
 
 
 
@@ -62,7 +62,7 @@ def create_classifier_densenet():
     return classifier
     
     
-def train(model, device, trainloader, testloader, optimizer, criterion, epochs=1):
+def train(model, device, trainloader, validloader, optimizer, criterion, epochs=1):
     
     steps = 0
     running_loss = 0
@@ -89,7 +89,7 @@ def train(model, device, trainloader, testloader, optimizer, criterion, epochs=1
                 test_loss = 0
                 accuracy = 0 
 
-                for images, labels in testloader:
+                for images, labels in validloader:
                     images, labels = images.to(device), labels.to(device)
 
                     logps = model(images)
@@ -104,8 +104,8 @@ def train(model, device, trainloader, testloader, optimizer, criterion, epochs=1
 
                 print("Epoch: {}/{}.. ".format(epoch+1, epochs),
                       "Training Loss: {:.3f}.. ".format(running_loss/print_every),
-                      "Test Loss: {:.3f}.. ".format(test_loss/len(testloader)),
-                      "Test Accuracy: {:.3f}".format(accuracy/len(testloader)))
+                      "Test Loss: {:.3f}.. ".format(test_loss/len(validloader)),
+                      "Test Accuracy: {:.3f}".format(accuracy/len(validloader)))
 
                 running_loss = 0
                 model.train()
