@@ -13268,9 +13268,11 @@ GPU Workspaces about Keeping Your Session Active. You'll want to include code fr
 
 <span class="n">train_data</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">ImageFolder</span><span class="p">(</span><span class="n">train_dir</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">train_transforms</span><span class="p">)</span>
 <span class="n">test_data</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">ImageFolder</span><span class="p">(</span><span class="n">test_dir</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">test_transforms</span><span class="p">)</span>
+<span class="n">valid_data</span> <span class="o">=</span> <span class="n">datasets</span><span class="o">.</span><span class="n">ImageFolder</span><span class="p">(</span><span class="n">valid_dir</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">test_transforms</span><span class="p">)</span>
 
 <span class="n">trainloader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">testloader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<span class="n">validloader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">valid_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13303,7 +13305,7 @@ GPU Workspaces about Keeping Your Session Active. You'll want to include code fr
 
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>Downloading: &#34;https://download.pytorch.org/models/vgg16-397923af.pth&#34; to /root/.torch/models/vgg16-397923af.pth
-100%|██████████| 553433881/553433881 [04:13&lt;00:00, 2181804.99it/s]
+100%|██████████| 553433881/553433881 [00:05&lt;00:00, 98785162.14it/s] 
 </pre>
 </div>
 </div>
@@ -13489,7 +13491,7 @@ GPU Workspaces about Keeping Your Session Active. You'll want to include code fr
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get ready to train. Also run this when predicting</span>
@@ -13570,7 +13572,7 @@ GPU Workspaces about Keeping Your Session Active. You'll want to include code fr
             <span class="n">test_loss</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">accuracy</span> <span class="o">=</span> <span class="mi">0</span> 
             
-            <span class="k">for</span> <span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">testloader</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">validloader</span><span class="p">:</span>
                 <span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
                 
                 <span class="n">logps</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
@@ -13585,12 +13587,12 @@ GPU Workspaces about Keeping Your Session Active. You'll want to include code fr
                 
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch: </span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">.. &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="p">),</span>
                   <span class="s2">&quot;Training Loss: </span><span class="si">{:.3f}</span><span class="s2">.. &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">running_loss</span><span class="o">/</span><span class="n">print_every</span><span class="p">),</span>
-                  <span class="s2">&quot;Test Loss: </span><span class="si">{:.3f}</span><span class="s2">.. &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_loss</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">testloader</span><span class="p">)),</span>
-                  <span class="s2">&quot;Test Accuracy: </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">accuracy</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">testloader</span><span class="p">)))</span>
+                  <span class="s2">&quot;Test Loss: </span><span class="si">{:.3f}</span><span class="s2">.. &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_loss</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">validloader</span><span class="p">)),</span>
+                  <span class="s2">&quot;Test Accuracy: </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">accuracy</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">validloader</span><span class="p">)))</span>
                 
             <span class="n">running_loss</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-                             
+<span class="c1">#                              </span>
 </pre></div>
 
     </div>
@@ -13607,47 +13609,102 @@ GPU Workspaces about Keeping Your Session Active. You'll want to include code fr
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Epoch: 1/1..  Training Loss: 5.998..  Test Loss: 5.170..  Test Accuracy: 0.093
-Epoch: 1/1..  Training Loss: 5.116..  Test Loss: 4.520..  Test Accuracy: 0.172
-Epoch: 1/1..  Training Loss: 4.330..  Test Loss: 4.074..  Test Accuracy: 0.169
-Epoch: 1/1..  Training Loss: 4.132..  Test Loss: 3.585..  Test Accuracy: 0.237
-Epoch: 1/1..  Training Loss: 3.908..  Test Loss: 3.331..  Test Accuracy: 0.293
-Epoch: 1/1..  Training Loss: 3.472..  Test Loss: 2.970..  Test Accuracy: 0.374
-Epoch: 1/1..  Training Loss: 3.172..  Test Loss: 2.629..  Test Accuracy: 0.411
-Epoch: 1/1..  Training Loss: 3.005..  Test Loss: 2.448..  Test Accuracy: 0.424
-Epoch: 1/1..  Training Loss: 2.775..  Test Loss: 2.298..  Test Accuracy: 0.446
-Epoch: 1/1..  Training Loss: 2.694..  Test Loss: 2.181..  Test Accuracy: 0.452
-Epoch: 1/1..  Training Loss: 2.566..  Test Loss: 2.026..  Test Accuracy: 0.484
-Epoch: 1/1..  Training Loss: 2.435..  Test Loss: 1.862..  Test Accuracy: 0.554
-Epoch: 1/1..  Training Loss: 2.192..  Test Loss: 1.745..  Test Accuracy: 0.570
-Epoch: 1/1..  Training Loss: 2.225..  Test Loss: 1.685..  Test Accuracy: 0.565
-Epoch: 1/1..  Training Loss: 1.950..  Test Loss: 1.610..  Test Accuracy: 0.604
-Epoch: 1/1..  Training Loss: 2.208..  Test Loss: 1.507..  Test Accuracy: 0.610
-Epoch: 1/1..  Training Loss: 2.026..  Test Loss: 1.520..  Test Accuracy: 0.609
-Epoch: 1/1..  Training Loss: 1.971..  Test Loss: 1.522..  Test Accuracy: 0.595
-Epoch: 1/1..  Training Loss: 1.889..  Test Loss: 1.499..  Test Accuracy: 0.628
-Epoch: 1/1..  Training Loss: 1.931..  Test Loss: 1.329..  Test Accuracy: 0.668
-Epoch: 1/1..  Training Loss: 1.781..  Test Loss: 1.349..  Test Accuracy: 0.644
-Epoch: 1/1..  Training Loss: 1.757..  Test Loss: 1.331..  Test Accuracy: 0.646
-Epoch: 1/1..  Training Loss: 1.820..  Test Loss: 1.266..  Test Accuracy: 0.652
-Epoch: 1/1..  Training Loss: 1.742..  Test Loss: 1.186..  Test Accuracy: 0.677
-Epoch: 1/1..  Training Loss: 1.537..  Test Loss: 1.229..  Test Accuracy: 0.673
-Epoch: 1/1..  Training Loss: 1.780..  Test Loss: 1.164..  Test Accuracy: 0.701
-Epoch: 1/1..  Training Loss: 1.516..  Test Loss: 1.080..  Test Accuracy: 0.715
-Epoch: 1/1..  Training Loss: 1.720..  Test Loss: 1.143..  Test Accuracy: 0.700
-Epoch: 1/1..  Training Loss: 1.745..  Test Loss: 1.096..  Test Accuracy: 0.722
-Epoch: 1/1..  Training Loss: 1.721..  Test Loss: 1.149..  Test Accuracy: 0.688
-Epoch: 1/1..  Training Loss: 1.419..  Test Loss: 1.077..  Test Accuracy: 0.702
-Epoch: 1/1..  Training Loss: 1.537..  Test Loss: 1.108..  Test Accuracy: 0.703
-Epoch: 1/1..  Training Loss: 1.468..  Test Loss: 1.053..  Test Accuracy: 0.718
-Epoch: 1/1..  Training Loss: 1.379..  Test Loss: 1.097..  Test Accuracy: 0.705
-Epoch: 1/1..  Training Loss: 1.667..  Test Loss: 1.052..  Test Accuracy: 0.707
-Epoch: 1/1..  Training Loss: 1.589..  Test Loss: 0.945..  Test Accuracy: 0.739
-Epoch: 1/1..  Training Loss: 1.754..  Test Loss: 0.947..  Test Accuracy: 0.745
-Epoch: 1/1..  Training Loss: 1.603..  Test Loss: 0.988..  Test Accuracy: 0.729
-Epoch: 1/1..  Training Loss: 1.283..  Test Loss: 1.013..  Test Accuracy: 0.727
-Epoch: 1/1..  Training Loss: 1.372..  Test Loss: 0.922..  Test Accuracy: 0.756
-Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
+<pre>Epoch: 1/1..  Training Loss: 5.714..  Test Loss: 4.987..  Test Accuracy: 0.099
+Epoch: 1/1..  Training Loss: 4.927..  Test Loss: 4.217..  Test Accuracy: 0.193
+Epoch: 1/1..  Training Loss: 4.045..  Test Loss: 3.794..  Test Accuracy: 0.210
+Epoch: 1/1..  Training Loss: 3.778..  Test Loss: 3.439..  Test Accuracy: 0.280
+Epoch: 1/1..  Training Loss: 3.752..  Test Loss: 3.010..  Test Accuracy: 0.393
+Epoch: 1/1..  Training Loss: 3.414..  Test Loss: 2.746..  Test Accuracy: 0.426
+Epoch: 1/1..  Training Loss: 3.353..  Test Loss: 2.694..  Test Accuracy: 0.394
+Epoch: 1/1..  Training Loss: 3.370..  Test Loss: 2.380..  Test Accuracy: 0.434
+Epoch: 1/1..  Training Loss: 2.778..  Test Loss: 2.179..  Test Accuracy: 0.458
+Epoch: 1/1..  Training Loss: 2.601..  Test Loss: 1.985..  Test Accuracy: 0.516
+Epoch: 1/1..  Training Loss: 2.468..  Test Loss: 1.756..  Test Accuracy: 0.579
+Epoch: 1/1..  Training Loss: 2.560..  Test Loss: 1.713..  Test Accuracy: 0.560
+Epoch: 1/1..  Training Loss: 2.140..  Test Loss: 1.625..  Test Accuracy: 0.604
+Epoch: 1/1..  Training Loss: 2.062..  Test Loss: 1.681..  Test Accuracy: 0.578
+Epoch: 1/1..  Training Loss: 2.426..  Test Loss: 1.429..  Test Accuracy: 0.621
+Epoch: 1/1..  Training Loss: 1.984..  Test Loss: 1.268..  Test Accuracy: 0.657
+Epoch: 1/1..  Training Loss: 2.032..  Test Loss: 1.337..  Test Accuracy: 0.629
+Epoch: 1/1..  Training Loss: 2.109..  Test Loss: 1.323..  Test Accuracy: 0.644
+Epoch: 1/1..  Training Loss: 1.840..  Test Loss: 1.265..  Test Accuracy: 0.658
+Epoch: 1/1..  Training Loss: 1.762..  Test Loss: 1.238..  Test Accuracy: 0.677
+Epoch: 1/1..  Training Loss: 1.498..  Test Loss: 1.214..  Test Accuracy: 0.663
+Epoch: 1/1..  Training Loss: 1.826..  Test Loss: 1.061..  Test Accuracy: 0.718
+Epoch: 1/1..  Training Loss: 1.698..  Test Loss: 1.131..  Test Accuracy: 0.685
+Epoch: 1/1..  Training Loss: 1.803..  Test Loss: 1.249..  Test Accuracy: 0.633
+Epoch: 1/1..  Training Loss: 1.952..  Test Loss: 1.114..  Test Accuracy: 0.694
+Epoch: 1/1..  Training Loss: 1.852..  Test Loss: 1.013..  Test Accuracy: 0.742
+Epoch: 1/1..  Training Loss: 1.505..  Test Loss: 0.976..  Test Accuracy: 0.756
+Epoch: 1/1..  Training Loss: 1.536..  Test Loss: 0.969..  Test Accuracy: 0.726
+Epoch: 1/1..  Training Loss: 1.596..  Test Loss: 0.906..  Test Accuracy: 0.744
+Epoch: 1/1..  Training Loss: 1.532..  Test Loss: 0.930..  Test Accuracy: 0.738
+Epoch: 1/1..  Training Loss: 1.497..  Test Loss: 0.921..  Test Accuracy: 0.742
+Epoch: 1/1..  Training Loss: 1.773..  Test Loss: 0.834..  Test Accuracy: 0.772
+Epoch: 1/1..  Training Loss: 1.717..  Test Loss: 0.849..  Test Accuracy: 0.763
+Epoch: 1/1..  Training Loss: 1.547..  Test Loss: 0.856..  Test Accuracy: 0.768
+Epoch: 1/1..  Training Loss: 1.570..  Test Loss: 0.860..  Test Accuracy: 0.768
+Epoch: 1/1..  Training Loss: 1.611..  Test Loss: 0.868..  Test Accuracy: 0.768
+Epoch: 1/1..  Training Loss: 1.606..  Test Loss: 0.834..  Test Accuracy: 0.766
+Epoch: 1/1..  Training Loss: 1.344..  Test Loss: 0.844..  Test Accuracy: 0.776
+Epoch: 1/1..  Training Loss: 1.419..  Test Loss: 0.730..  Test Accuracy: 0.793
+Epoch: 1/1..  Training Loss: 1.460..  Test Loss: 0.762..  Test Accuracy: 0.790
+Epoch: 1/1..  Training Loss: 1.587..  Test Loss: 0.678..  Test Accuracy: 0.815
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Now run test data through the network</span>
+
+
+<span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">test_loss</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="mi">0</span> 
+            
+<span class="k">for</span> <span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="ow">in</span> <span class="n">testloader</span><span class="p">:</span>
+    <span class="n">images</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">images</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="n">logps</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">logps</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+    <span class="n">test_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>         
+
+    <span class="c1"># calculate accuracy</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logps</span><span class="p">)</span>
+    <span class="n">top_ps</span><span class="p">,</span> <span class="n">top_class</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">equality</span> <span class="o">=</span> <span class="n">top_class</span> <span class="o">==</span> <span class="n">labels</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">top_class</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">accuracy</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">equality</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">))</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>                 
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch: </span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">.. &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="p">),</span>
+      <span class="s2">&quot;Training Loss: </span><span class="si">{:.3f}</span><span class="s2">.. &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">running_loss</span><span class="o">/</span><span class="n">print_every</span><span class="p">),</span>
+      <span class="s2">&quot;Test Loss: </span><span class="si">{:.3f}</span><span class="s2">.. &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">test_loss</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">testloader</span><span class="p">)),</span>
+      <span class="s2">&quot;Test Accuracy: </span><span class="si">{:.3f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">accuracy</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">testloader</span><span class="p">)))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Epoch: 1/1..  Training Loss: 0.000..  Test Loss: 0.831..  Test Accuracy: 0.757
 </pre>
 </div>
 </div>
@@ -13668,7 +13725,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Predictions actually run quickly on model saved to cpu</span>
@@ -13686,7 +13743,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[14]:</div>
+    <div class="prompt output_prompt">Out[12]:</div>
 
 
 
@@ -13744,7 +13801,7 @@ Epoch: 1/1..  Training Loss: 1.535..  Test Loss: 0.813..  Test Accuracy: 0.773
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## Save checkpoint, so that training does not have to be repeated</span>
